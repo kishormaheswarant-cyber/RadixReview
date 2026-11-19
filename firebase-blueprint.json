@@ -1,0 +1,866 @@
+{
+  "entities": {
+    "TestConnection": {
+      "title": "TestConnection",
+      "description": "Connectivity health probe document for Firestore startup validation.",
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "maxLength": 32,
+          "description": "Connection status string."
+        }
+      },
+      "required": ["status"]
+    },
+    "UserPublicProfile": {
+      "title": "UserPublicProfile",
+      "description": "Public non-PII Radix user profile document.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "role": {
+          "type": "string",
+          "enum": ["buyer", "seller", "both"],
+          "maxLength": 16
+        },
+        "sellerId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^(|[a-zA-Z0-9_\\-]+)$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["id", "name", "role", "sellerId", "createdAt", "updatedAt"]
+    },
+    "UserPrivateInfo": {
+      "title": "UserPrivateInfo",
+      "description": "Owner-only PII document storing user email and default shipping contact.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "minLength": 3,
+          "maxLength": 200
+        },
+        "shippingName": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "shippingAddress": {
+          "type": "string",
+          "maxLength": 240
+        },
+        "shippingCity": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "shippingPostal": {
+          "type": "string",
+          "maxLength": 24
+        },
+        "shippingPhone": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["userId", "email", "updatedAt"]
+    },
+    "PaymentMethod": {
+      "title": "PaymentMethod",
+      "description": "Tokenized payment card metadata (no raw PAN or CVC).",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "brand": {
+          "type": "string",
+          "enum": ["Visa", "Mastercard", "American Express", "Discover", "Card"],
+          "maxLength": 32
+        },
+        "last4": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 4,
+          "pattern": "^[0-9]{4}$"
+        },
+        "expMonth": {
+          "type": "integer"
+        },
+        "expYear": {
+          "type": "integer"
+        },
+        "cardholderName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "token": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "isDefault": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "brand",
+        "last4",
+        "expMonth",
+        "expYear",
+        "cardholderName",
+        "token",
+        "isDefault",
+        "createdAt"
+      ]
+    },
+    "SellerProfile": {
+      "title": "SellerProfile",
+      "description": "Merchant storefront profile on Radix.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "storeName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "bio": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 800
+        },
+        "location": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "isPublic": {
+          "type": "boolean"
+        },
+        "verified": {
+          "type": "boolean"
+        },
+        "avgRating": {
+          "type": "number"
+        },
+        "reviewCount": {
+          "type": "integer"
+        },
+        "positivePercent": {
+          "type": "integer"
+        },
+        "productCount": {
+          "type": "integer"
+        },
+        "ordersFulfilled": {
+          "type": "integer"
+        },
+        "joinedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "storeName",
+        "bio",
+        "location",
+        "isPublic",
+        "verified",
+        "avgRating",
+        "reviewCount",
+        "positivePercent",
+        "productCount",
+        "ordersFulfilled",
+        "joinedAt",
+        "updatedAt"
+      ]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Marketplace product listing owned by a Radix seller.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "sellerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "sellerName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "sellerLocation": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "sellerVerified": {
+          "type": "boolean"
+        },
+        "sellerRating": {
+          "type": "number"
+        },
+        "sellerReviewCount": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 160
+        },
+        "slug": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 180,
+          "pattern": "^[a-z0-9\\-]+$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 2000
+        },
+        "category": {
+          "type": "string",
+          "enum": ["Audio", "Coffee & Kitchen", "Computing", "Lighting", "Timepieces", "Optics", "Carry"],
+          "maxLength": 40
+        },
+        "priceCents": {
+          "type": "integer"
+        },
+        "stock": {
+          "type": "integer"
+        },
+        "imageUrl": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 500
+        },
+        "sku": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 48,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "specs": {
+          "type": "array",
+          "description": "Bounded list of up to 12 specification maps."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "draft", "archived"],
+          "maxLength": 16
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "sellerId",
+        "ownerId",
+        "sellerName",
+        "sellerLocation",
+        "sellerVerified",
+        "sellerRating",
+        "sellerReviewCount",
+        "title",
+        "slug",
+        "description",
+        "category",
+        "priceCents",
+        "stock",
+        "imageUrl",
+        "sku",
+        "specs",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Buyer product and seller rating published on Radix.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "productId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "productTitle": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "sellerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "reviewerName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "orderId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^(|[a-zA-Z0-9_\\-]+)$"
+        },
+        "rating": {
+          "type": "integer"
+        },
+        "sellerRating": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 140
+        },
+        "comment": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 2000
+        },
+        "verifiedPurchase": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["published", "hidden"],
+          "maxLength": 16
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "productId",
+        "sellerId",
+        "userId",
+        "reviewerName",
+        "orderId",
+        "rating",
+        "sellerRating",
+        "title",
+        "comment",
+        "verifiedPurchase",
+        "status",
+        "createdAt"
+      ]
+    },
+    "ExternalOffer": {
+      "title": "ExternalOffer",
+      "description": "Cross-website price and delivery offer associated with a product.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "productId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "siteName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "siteDomain": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 120
+        },
+        "offerUrl": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 500,
+          "pattern": "^https?://.+"
+        },
+        "priceCents": {
+          "type": "integer"
+        },
+        "shippingCents": {
+          "type": "integer"
+        },
+        "conditionLabel": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "deliveryWindow": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "sellerRating": {
+          "type": "number"
+        },
+        "inStock": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "archived"],
+          "maxLength": 16
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "productId",
+        "userId",
+        "siteName",
+        "siteDomain",
+        "offerUrl",
+        "priceCents",
+        "shippingCents",
+        "conditionLabel",
+        "deliveryWindow",
+        "sellerRating",
+        "inStock",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Marketplace purchase order with buyer, seller routing, and fulfillment status.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "trackingCode": {
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 32,
+          "pattern": "^RDX-[A-Z0-9]+$"
+        },
+        "buyerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "buyerName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "sellerIds": {
+          "type": "array",
+          "description": "Bounded list (max 10) of seller UIDs fulfilling items in this order."
+        },
+        "subtotalCents": {
+          "type": "integer"
+        },
+        "shippingCents": {
+          "type": "integer"
+        },
+        "taxCents": {
+          "type": "integer"
+        },
+        "totalCents": {
+          "type": "integer"
+        },
+        "shippingName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "shippingAddress": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 240
+        },
+        "shippingCity": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "shippingPostal": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 24
+        },
+        "shippingPhone": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 40
+        },
+        "status": {
+          "type": "string",
+          "enum": ["confirmed", "packed", "dispatched", "out_for_delivery", "delivered"],
+          "maxLength": 24
+        },
+        "estimatedDelivery": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 64
+        },
+        "paymentBrand": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 32
+        },
+        "paymentLast4": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 4,
+          "pattern": "^[0-9]{4}$"
+        },
+        "gatewayReference": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "trackingCode",
+        "buyerId",
+        "buyerName",
+        "sellerIds",
+        "subtotalCents",
+        "shippingCents",
+        "taxCents",
+        "totalCents",
+        "shippingName",
+        "shippingAddress",
+        "shippingCity",
+        "shippingPostal",
+        "shippingPhone",
+        "status",
+        "estimatedDelivery",
+        "paymentBrand",
+        "paymentLast4",
+        "gatewayReference",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "OrderItem": {
+      "title": "OrderItem",
+      "description": "Line item snapshot under an order.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "orderId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "buyerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "sellerIds": {
+          "type": "array",
+          "description": "Bounded list (max 10) mirrored from parent order for list query guards."
+        },
+        "productId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "sellerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "sellerName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "titleSnapshot": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "imageSnapshot": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 500
+        },
+        "unitPriceCents": {
+          "type": "integer"
+        },
+        "quantity": {
+          "type": "integer"
+        },
+        "itemStatus": {
+          "type": "string",
+          "enum": ["confirmed", "packed", "dispatched", "out_for_delivery", "delivered"],
+          "maxLength": 24
+        }
+      },
+      "required": [
+        "id",
+        "orderId",
+        "buyerId",
+        "sellerIds",
+        "productId",
+        "sellerId",
+        "sellerName",
+        "titleSnapshot",
+        "imageSnapshot",
+        "unitPriceCents",
+        "quantity",
+        "itemStatus"
+      ]
+    },
+    "OrderTrackingEvent": {
+      "title": "OrderTrackingEvent",
+      "description": "Shipment milestone event under an order.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "orderId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "buyerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "sellerIds": {
+          "type": "array",
+          "description": "Bounded list (max 10) mirrored from parent order for list query guards."
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["confirmed", "packed", "dispatched", "out_for_delivery", "delivered"],
+          "maxLength": 24
+        },
+        "location": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "note": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 300
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "orderId",
+        "buyerId",
+        "sellerIds",
+        "actorId",
+        "status",
+        "location",
+        "note",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/test/connection": {
+      "schema": { "$ref": "#/entities/TestConnection" },
+      "description": "Startup Firestore connection verification document."
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserPublicProfile" },
+      "description": "Public non-PII user display profile."
+    },
+    "/users/{userId}/private/{docId}": {
+      "schema": { "$ref": "#/entities/UserPrivateInfo" },
+      "description": "Owner-restricted PII profile and default shipping details."
+    },
+    "/users/{userId}/paymentMethods/{methodId}": {
+      "schema": { "$ref": "#/entities/PaymentMethod" },
+      "description": "Owner-restricted vaulted payment tokens."
+    },
+    "/sellers/{sellerId}": {
+      "schema": { "$ref": "#/entities/SellerProfile" },
+      "description": "Public Radix merchant storefront metadata."
+    },
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Marketplace product listings."
+    },
+    "/reviews/{reviewId}": {
+      "schema": { "$ref": "#/entities/Review" },
+      "description": "Buyer product and seller ratings."
+    },
+    "/externalOffers/{offerId}": {
+      "schema": { "$ref": "#/entities/ExternalOffer" },
+      "description": "Cross-website product offers."
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Buyer purchase orders with seller routing."
+    },
+    "/orders/{orderId}/items/{itemId}": {
+      "schema": { "$ref": "#/entities/OrderItem" },
+      "description": "Line item snapshots belonging to an order."
+    },
+    "/orders/{orderId}/trackingEvents/{eventId}": {
+      "schema": { "$ref": "#/entities/OrderTrackingEvent" },
+      "description": "Live shipment milestone history belonging to an order."
+    }
+  }
+}

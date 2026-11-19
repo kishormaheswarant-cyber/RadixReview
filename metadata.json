@@ -1,0 +1,6 @@
+{
+  "name": "Radix — Buy, Sell & Review Marketplace",
+  "description": "Full-stack e-commerce marketplace built with React, Node.js, SQLite, and WebSockets featuring secure password authentication, real-time order tracking, seller ratings, and tokenized payment gateway checkout.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
